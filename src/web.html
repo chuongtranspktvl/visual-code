@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>CONTROL ESP8266</title>
+	<meta charset="utf-8">
+</head>
+<style type="">
+
+</style>
+<script>
+	function UpdateData() {
+		var xhttm = new XMLHttpRequest();
+		xhttm.onreadystatechange = function () {
+			if (this.readyState == 4 && this.status == 200) {
+				var DataESP = xhttm.responseText;
+				console.log("du lieu esp:" + DataESP);
+				var DataJson = JSON.parse(DataESP);
+				if (DataJson.ND != null) {
+					document.getElementById("nhietdo").innerHTML = DataJson.ND;
+				}
+				if (DataJson.DA != null) {
+					document.getElementById("doam").innerHTML = DataJson.DA;
+				}
+				if (DataJson.TB1 != null) {
+					if (DataJson.TB1 == 1) {
+						document.getElementById("tttb1").innerHTML = DataJson.TB1;
+					}
+					else if (DataJson.TB1 == 0) {
+						document.getElementById("tttb1").innerHTML = DataJson.TB1;
+					}
+				}
+				if (DataJson.TB2 != null) {
+					if (DataJson.TB2 == 1) {
+						document.getElementById("tttb2").innerHTML = DataJson.TB2;
+					}
+					else if (DataJson.TB2 == 0) {
+						document.getElementById("tttb2").innerHTML = DataJson.TB2;
+					}
+				}
+			}
+		}
+		xhttm.open("GET", "/Update", true);
+		xhttm.send();
+		setTimeout(function () { UpdateData() }, 1000);
+	}
+	function GetbuttonData(data) {
+		switch (data) {
+			case 1:
+				console.log("Button TB1 click");
+				var thietbi1 = document.getElementById("tttb1").innerHTML;
+				console.log(thietbi1);
+				if (thietbi1 == "ON") {
+					var tx = "A0B";
+					var xhttm = new XMLHttpRequest();
+					xhttm.open("GET", "/Button?Button" + tx, true);
+					xhttm.send();
+				}
+				else if (thietbi1 == "OFF") {
+					var tx = "A1B";
+					var xhttm = new XMLHttpRequest();
+					xhttm.open("GET", "/Button?Button" + tx, true);
+					xhttm.send();
+				}
+				break;
+			case 2:
+				console.log("Button TB2 click");
+				var thietbi2 = document.getElementById("tttb2").innerHTML;
+				console.log(thietbi2);
+				if (thietbi2 == "ON") {
+					var tx = "C0D";
+					var xhttm = new XMLHttpRequest();
+					xhttm.open("GET", "/Button?Button" + tx, true);
+					xhttm.send();
+				}
+				else if (thietbi2 == "OFF") {
+					var tx = "C1D";
+					var xhttm = new XMLHttpRequest();
+					xhttm.open("GET", "/Button?Button" + tx, true);
+					xhttm.send();
+				}
+				break;
+		}
+	}
+	function Getinput(data) {
+		switch (data) {
+			case 1:
+				console.log("input 1 send click");
+				var I1 = "E" + document.getElementById("ip1").value + "F";
+				var xhttm = new XMLHttpRequest();
+				xhttm.open("GET", "/Input?Input" + I1, true);
+				xhttm.send();
+				console.log(I1);
+				break;
+			case 2:
+				console.log("input 2 send click");
+				var I2 = "G" + document.getElementById("ip2").value + "H";
+				var xhttm = new XMLHttpRequest();
+				xhttm.open("GET", "/Input?Input" + I2, true);
+				xhttm.send();
+				console.log(I2);
+				break;
+		}
+	}
+</script>
+
+<body onload="UpdateData()">
+	<center>
+		<h1>GIAO DIỆN ĐIỀU KHIỂN GIÁM SÁT THIẾT BỊ </h1>
+		<button onclick="GetbuttonData(1)">ĐIỀU KHIỂN TB1</button>
+		<br>
+		<br>
+		<button onclick="GetbuttonData(2)">ĐIỀU KHIỂN TB2</button>
+		<br>
+		<br>
+		<input id="ip1">
+		<button onclick=Getinput(1)>SEND1</button>
+		<br>
+		<br>
+		<input id="ip2">
+		<button onclick=Getinput(2)>SEND2</button>
+		<h1> NHIỆT :
+			<label id="nhietdo"></label>
+		</h1>
+		<h1> ĐỘ :
+			<label id="doam"></label>
+		</h1>
+		<h1>
+			TRẠNG THÁI TB1 :
+			<label id="tttb1"></label>
+		</h1>
+		<h1>
+			TRẠNG THÁI TB :
+			<label id="tttb2"></label>
+		</h1>
+		<h1> CÀI ĐẶT 1 :
+			<label id="cd1"></label>
+		</h1>
+	</center>
+</body>
+
+</html>
